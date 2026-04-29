@@ -6,20 +6,20 @@ O objetivo é construir um compilador, em Python e com PLY, para um subconjunto 
 
 ## Estado atual
 
-Fase 0 concluída:
+Fase 1 concluída:
 
 - estrutura inicial do repositório;
 - exemplos do enunciado em `tests/fortran/`;
 - exemplos inválidos iniciais em `tests/invalid/`;
-- esqueleto dos módulos do compilador;
-- esqueleto do relatório técnico;
-- decisões iniciais documentadas em `docs/decisoes.md`.
+- lexer implementado com `ply.lex`;
+- reconhecimento de keywords, identificadores, números, strings, labels, operadores aritméticos, relacionais e lógicos;
+- modo de inspeção de tokens com `--tokens`.
 
-A próxima fase é a implementação do analisador léxico em `src/lexer.py`.
+A próxima fase é a implementação do analisador sintático em `src/parser.py`.
 
 ## Decisão sobre o formato Fortran
 
-Este projeto vai suportar uma forma livre inspirada nos exemplos do enunciado, em vez do formato rígido de colunas fixas do Fortran 77.
+Este projeto suporta uma forma livre inspirada nos exemplos do enunciado, em vez do formato rígido de colunas fixas do Fortran 77.
 
 Continuam a ser suportados labels numéricos, por exemplo:
 
@@ -28,6 +28,8 @@ DO 10 I = 1, N
   FAT = FAT * I
 10 CONTINUE
 ```
+
+Neste caso, o `10` após `DO` é um inteiro normal e o `10` no início da linha é reconhecido como `LABEL`.
 
 ## Estrutura
 
@@ -61,9 +63,27 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-## Execução nesta fase
+## Executar o lexer
 
-Nesta fase, o comando apenas confirma que o ficheiro é lido corretamente e mostra o estado da pipeline.
+Mostrar tokens no terminal:
+
+```bash
+python -m src.compiler tests/fortran/exemplo_02_fatorial.f77 --tokens
+```
+
+Guardar tokens num ficheiro:
+
+```bash
+python -m src.compiler tests/fortran/exemplo_02_fatorial.f77 --tokens-output build/exemplo_02_fatorial.tokens
+```
+
+## Smoke test desta fase
+
+```bash
+make smoke
+```
+
+O comando normal ainda não gera VM real. Apenas confirma que a análise léxica correu com sucesso:
 
 ```bash
 python -m src.compiler tests/fortran/exemplo_01_hello.f77 -o build/exemplo_01_hello.vm

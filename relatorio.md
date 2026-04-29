@@ -22,7 +22,7 @@ O objetivo principal é suportar as construções essenciais indicadas no enunci
 
 ### 3.1 Formato Fortran suportado
 
-Foi decidido suportar uma forma livre de Fortran, mantendo labels numéricos e a sintaxe dos exemplos fornecidos.
+Foi decidido suportar uma forma livre de Fortran, mantendo labels numéricos e a sintaxe dos exemplos fornecidos. Assim, não são implementadas as regras clássicas de colunas fixas do Fortran 77 nesta primeira versão.
 
 ### 3.2 Arquitetura
 
@@ -43,7 +43,28 @@ código fonte → tokens → AST → AST validada → código EWVM
 
 ## 4. Análise léxica
 
-A preencher na Fase 1.
+A análise léxica foi implementada com `ply.lex` no ficheiro `src/lexer.py`.
+
+O lexer reconhece:
+
+- palavras reservadas: `PROGRAM`, `END`, `INTEGER`, `REAL`, `LOGICAL`, `IF`, `THEN`, `ELSE`, `ENDIF`, `DO`, `CONTINUE`, `GOTO`, `READ`, `PRINT`, `FUNCTION`, `RETURN`, entre outras;
+- identificadores, normalizados para maiúsculas, porque Fortran não distingue maiúsculas de minúsculas;
+- literais inteiros e reais;
+- literais lógicos `.TRUE.` e `.FALSE.`;
+- strings delimitadas por plicas;
+- operadores aritméticos: `+`, `-`, `*`, `/`;
+- operadores relacionais: `.EQ.`, `.NE.`, `.LT.`, `.LE.`, `.GT.`, `.GE.`;
+- operadores lógicos: `.AND.`, `.OR.`, `.NOT.`;
+- labels numéricos no início lógico de uma linha;
+- quebras de linha, usadas mais tarde pelo parser para separar instruções.
+
+Os comentários iniciados por `!` são removidos antes da tokenização, exceto quando o símbolo aparece dentro de uma string. Como o projeto assume formato livre, `C`/`c` na primeira coluna não é tratado como comentário, para não criar conflitos com instruções válidas como `CONTINUE`.
+
+Para efeitos de teste, o compilador disponibiliza o modo:
+
+```bash
+python -m src.compiler tests/fortran/exemplo_02_fatorial.f77 --tokens
+```
 
 ## 5. Análise sintática
 
@@ -61,12 +82,14 @@ A preencher na Fase 4.
 
 Os exemplos de teste encontram-se em `tests/fortran/` e `tests/invalid/`.
 
+Nesta fase, todos os exemplos válidos do enunciado foram usados para confirmar que o lexer reconhece a sequência de tokens sem erros léxicos.
+
 ## 9. Dificuldades encontradas
 
-A preencher durante o desenvolvimento.
+Uma dificuldade inicial foi distinguir números inteiros normais de labels. A solução adotada foi classificar como `LABEL` apenas números que aparecem no início lógico de uma linha. Assim, em `DO 10 I = 1, N`, o `10` é um inteiro literal; em `10 CONTINUE`, o `10` é um label.
 
 ## 10. Como executar
 
 ```bash
-python -m src.compiler tests/fortran/exemplo_01_hello.f77 -o build/exemplo_01_hello.vm
+python -m src.compiler tests/fortran/exemplo_01_hello.f77 --tokens
 ```
