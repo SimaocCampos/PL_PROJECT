@@ -1,0 +1,362 @@
+{
+  "node": "ProgramFile",
+  "program": {
+    "node": "Program",
+    "name": "CONVERSOR",
+    "declarations": [
+      {
+        "node": "Declaration",
+        "type_name": "INTEGER",
+        "variables": [
+          {
+            "node": "VariableDeclaration",
+            "name": "NUM",
+            "dimensions": []
+          },
+          {
+            "node": "VariableDeclaration",
+            "name": "BASE",
+            "dimensions": []
+          },
+          {
+            "node": "VariableDeclaration",
+            "name": "RESULT",
+            "dimensions": []
+          },
+          {
+            "node": "VariableDeclaration",
+            "name": "CONVRT",
+            "dimensions": []
+          }
+        ]
+      }
+    ],
+    "statements": [
+      {
+        "node": "Print",
+        "items": [
+          {
+            "node": "Literal",
+            "value": "INTRODUZA UM NUMERO DECIMAL INTEIRO:",
+            "type_name": "STRING"
+          }
+        ]
+      },
+      {
+        "node": "Read",
+        "items": [
+          {
+            "node": "NameUse",
+            "name": "NUM",
+            "arguments": []
+          }
+        ]
+      },
+      {
+        "node": "Do",
+        "end_label": 10,
+        "variable": "BASE",
+        "start": {
+          "node": "Literal",
+          "value": 2,
+          "type_name": "INTEGER"
+        },
+        "end": {
+          "node": "Literal",
+          "value": 9,
+          "type_name": "INTEGER"
+        },
+        "step": null
+      },
+      {
+        "node": "Assignment",
+        "target": {
+          "node": "NameUse",
+          "name": "RESULT",
+          "arguments": []
+        },
+        "expression": {
+          "node": "NameUse",
+          "name": "CONVRT",
+          "arguments": [
+            {
+              "node": "NameUse",
+              "name": "NUM",
+              "arguments": []
+            },
+            {
+              "node": "NameUse",
+              "name": "BASE",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      {
+        "node": "Print",
+        "items": [
+          {
+            "node": "Literal",
+            "value": "BASE ",
+            "type_name": "STRING"
+          },
+          {
+            "node": "NameUse",
+            "name": "BASE",
+            "arguments": []
+          },
+          {
+            "node": "Literal",
+            "value": ": ",
+            "type_name": "STRING"
+          },
+          {
+            "node": "NameUse",
+            "name": "RESULT",
+            "arguments": []
+          }
+        ]
+      },
+      {
+        "node": "LabelledStatement",
+        "label": 10,
+        "statement": {
+          "node": "Continue"
+        }
+      }
+    ]
+  },
+  "subprograms": [
+    {
+      "node": "Function",
+      "name": "CONVRT",
+      "return_type": "INTEGER",
+      "parameters": [
+        "N",
+        "B"
+      ],
+      "declarations": [
+        {
+          "node": "Declaration",
+          "type_name": "INTEGER",
+          "variables": [
+            {
+              "node": "VariableDeclaration",
+              "name": "N",
+              "dimensions": []
+            },
+            {
+              "node": "VariableDeclaration",
+              "name": "B",
+              "dimensions": []
+            },
+            {
+              "node": "VariableDeclaration",
+              "name": "QUOT",
+              "dimensions": []
+            },
+            {
+              "node": "VariableDeclaration",
+              "name": "REM",
+              "dimensions": []
+            },
+            {
+              "node": "VariableDeclaration",
+              "name": "POT",
+              "dimensions": []
+            },
+            {
+              "node": "VariableDeclaration",
+              "name": "VAL",
+              "dimensions": []
+            }
+          ]
+        }
+      ],
+      "statements": [
+        {
+          "node": "Assignment",
+          "target": {
+            "node": "NameUse",
+            "name": "VAL",
+            "arguments": []
+          },
+          "expression": {
+            "node": "Literal",
+            "value": 0,
+            "type_name": "INTEGER"
+          }
+        },
+        {
+          "node": "Assignment",
+          "target": {
+            "node": "NameUse",
+            "name": "POT",
+            "arguments": []
+          },
+          "expression": {
+            "node": "Literal",
+            "value": 1,
+            "type_name": "INTEGER"
+          }
+        },
+        {
+          "node": "Assignment",
+          "target": {
+            "node": "NameUse",
+            "name": "QUOT",
+            "arguments": []
+          },
+          "expression": {
+            "node": "NameUse",
+            "name": "N",
+            "arguments": []
+          }
+        },
+        {
+          "node": "LabelledStatement",
+          "label": 20,
+          "statement": {
+            "node": "If",
+            "condition": {
+              "node": "BinaryOp",
+              "operator": "GT",
+              "left": {
+                "node": "NameUse",
+                "name": "QUOT",
+                "arguments": []
+              },
+              "right": {
+                "node": "Literal",
+                "value": 0,
+                "type_name": "INTEGER"
+              }
+            },
+            "then_statements": [
+              {
+                "node": "Assignment",
+                "target": {
+                  "node": "NameUse",
+                  "name": "REM",
+                  "arguments": []
+                },
+                "expression": {
+                  "node": "FunctionCall",
+                  "name": "MOD",
+                  "arguments": [
+                    {
+                      "node": "NameUse",
+                      "name": "QUOT",
+                      "arguments": []
+                    },
+                    {
+                      "node": "NameUse",
+                      "name": "B",
+                      "arguments": []
+                    }
+                  ]
+                }
+              },
+              {
+                "node": "Assignment",
+                "target": {
+                  "node": "NameUse",
+                  "name": "VAL",
+                  "arguments": []
+                },
+                "expression": {
+                  "node": "BinaryOp",
+                  "operator": "+",
+                  "left": {
+                    "node": "NameUse",
+                    "name": "VAL",
+                    "arguments": []
+                  },
+                  "right": {
+                    "node": "BinaryOp",
+                    "operator": "*",
+                    "left": {
+                      "node": "NameUse",
+                      "name": "REM",
+                      "arguments": []
+                    },
+                    "right": {
+                      "node": "NameUse",
+                      "name": "POT",
+                      "arguments": []
+                    }
+                  }
+                }
+              },
+              {
+                "node": "Assignment",
+                "target": {
+                  "node": "NameUse",
+                  "name": "QUOT",
+                  "arguments": []
+                },
+                "expression": {
+                  "node": "BinaryOp",
+                  "operator": "/",
+                  "left": {
+                    "node": "NameUse",
+                    "name": "QUOT",
+                    "arguments": []
+                  },
+                  "right": {
+                    "node": "NameUse",
+                    "name": "B",
+                    "arguments": []
+                  }
+                }
+              },
+              {
+                "node": "Assignment",
+                "target": {
+                  "node": "NameUse",
+                  "name": "POT",
+                  "arguments": []
+                },
+                "expression": {
+                  "node": "BinaryOp",
+                  "operator": "*",
+                  "left": {
+                    "node": "NameUse",
+                    "name": "POT",
+                    "arguments": []
+                  },
+                  "right": {
+                    "node": "Literal",
+                    "value": 10,
+                    "type_name": "INTEGER"
+                  }
+                }
+              },
+              {
+                "node": "Goto",
+                "label": 20
+              }
+            ],
+            "else_statements": []
+          }
+        },
+        {
+          "node": "Assignment",
+          "target": {
+            "node": "NameUse",
+            "name": "CONVRT",
+            "arguments": []
+          },
+          "expression": {
+            "node": "NameUse",
+            "name": "VAL",
+            "arguments": []
+          }
+        },
+        {
+          "node": "Return"
+        }
+      ]
+    }
+  ]
+}

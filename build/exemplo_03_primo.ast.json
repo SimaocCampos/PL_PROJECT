@@ -1,0 +1,239 @@
+{
+  "node": "ProgramFile",
+  "program": {
+    "node": "Program",
+    "name": "PRIMO",
+    "declarations": [
+      {
+        "node": "Declaration",
+        "type_name": "INTEGER",
+        "variables": [
+          {
+            "node": "VariableDeclaration",
+            "name": "NUM",
+            "dimensions": []
+          },
+          {
+            "node": "VariableDeclaration",
+            "name": "I",
+            "dimensions": []
+          }
+        ]
+      },
+      {
+        "node": "Declaration",
+        "type_name": "LOGICAL",
+        "variables": [
+          {
+            "node": "VariableDeclaration",
+            "name": "ISPRIM",
+            "dimensions": []
+          }
+        ]
+      }
+    ],
+    "statements": [
+      {
+        "node": "Print",
+        "items": [
+          {
+            "node": "Literal",
+            "value": "Introduza um numero inteiro positivo:",
+            "type_name": "STRING"
+          }
+        ]
+      },
+      {
+        "node": "Read",
+        "items": [
+          {
+            "node": "NameUse",
+            "name": "NUM",
+            "arguments": []
+          }
+        ]
+      },
+      {
+        "node": "Assignment",
+        "target": {
+          "node": "NameUse",
+          "name": "ISPRIM",
+          "arguments": []
+        },
+        "expression": {
+          "node": "Literal",
+          "value": true,
+          "type_name": "LOGICAL"
+        }
+      },
+      {
+        "node": "Assignment",
+        "target": {
+          "node": "NameUse",
+          "name": "I",
+          "arguments": []
+        },
+        "expression": {
+          "node": "Literal",
+          "value": 2,
+          "type_name": "INTEGER"
+        }
+      },
+      {
+        "node": "LabelledStatement",
+        "label": 20,
+        "statement": {
+          "node": "If",
+          "condition": {
+            "node": "BinaryOp",
+            "operator": "AND",
+            "left": {
+              "node": "BinaryOp",
+              "operator": "LE",
+              "left": {
+                "node": "NameUse",
+                "name": "I",
+                "arguments": []
+              },
+              "right": {
+                "node": "BinaryOp",
+                "operator": "/",
+                "left": {
+                  "node": "NameUse",
+                  "name": "NUM",
+                  "arguments": []
+                },
+                "right": {
+                  "node": "Literal",
+                  "value": 2,
+                  "type_name": "INTEGER"
+                }
+              }
+            },
+            "right": {
+              "node": "NameUse",
+              "name": "ISPRIM",
+              "arguments": []
+            }
+          },
+          "then_statements": [
+            {
+              "node": "If",
+              "condition": {
+                "node": "BinaryOp",
+                "operator": "EQ",
+                "left": {
+                  "node": "FunctionCall",
+                  "name": "MOD",
+                  "arguments": [
+                    {
+                      "node": "NameUse",
+                      "name": "NUM",
+                      "arguments": []
+                    },
+                    {
+                      "node": "NameUse",
+                      "name": "I",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "right": {
+                  "node": "Literal",
+                  "value": 0,
+                  "type_name": "INTEGER"
+                }
+              },
+              "then_statements": [
+                {
+                  "node": "Assignment",
+                  "target": {
+                    "node": "NameUse",
+                    "name": "ISPRIM",
+                    "arguments": []
+                  },
+                  "expression": {
+                    "node": "Literal",
+                    "value": false,
+                    "type_name": "LOGICAL"
+                  }
+                }
+              ],
+              "else_statements": []
+            },
+            {
+              "node": "Assignment",
+              "target": {
+                "node": "NameUse",
+                "name": "I",
+                "arguments": []
+              },
+              "expression": {
+                "node": "BinaryOp",
+                "operator": "+",
+                "left": {
+                  "node": "NameUse",
+                  "name": "I",
+                  "arguments": []
+                },
+                "right": {
+                  "node": "Literal",
+                  "value": 1,
+                  "type_name": "INTEGER"
+                }
+              }
+            },
+            {
+              "node": "Goto",
+              "label": 20
+            }
+          ],
+          "else_statements": []
+        }
+      },
+      {
+        "node": "If",
+        "condition": {
+          "node": "NameUse",
+          "name": "ISPRIM",
+          "arguments": []
+        },
+        "then_statements": [
+          {
+            "node": "Print",
+            "items": [
+              {
+                "node": "NameUse",
+                "name": "NUM",
+                "arguments": []
+              },
+              {
+                "node": "Literal",
+                "value": " e um numero primo",
+                "type_name": "STRING"
+              }
+            ]
+          }
+        ],
+        "else_statements": [
+          {
+            "node": "Print",
+            "items": [
+              {
+                "node": "NameUse",
+                "name": "NUM",
+                "arguments": []
+              },
+              {
+                "node": "Literal",
+                "value": " nao e um numero primo",
+                "type_name": "STRING"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "subprograms": []
+}

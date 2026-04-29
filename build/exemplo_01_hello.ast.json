@@ -1,0 +1,21 @@
+{
+  "node": "ProgramFile",
+  "program": {
+    "node": "Program",
+    "name": "HELLO",
+    "declarations": [],
+    "statements": [
+      {
+        "node": "Print",
+        "items": [
+          {
+            "node": "Literal",
+            "value": "Ola, Mundo!",
+            "type_name": "STRING"
+          }
+        ]
+      }
+    ]
+  },
+  "subprograms": []
+}

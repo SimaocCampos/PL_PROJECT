@@ -6,16 +6,18 @@ O objetivo é construir um compilador, em Python e com PLY, para um subconjunto 
 
 ## Estado atual
 
-Fase 1 concluída:
+Fase 2 concluída:
 
 - estrutura inicial do repositório;
 - exemplos do enunciado em `tests/fortran/`;
 - exemplos inválidos iniciais em `tests/invalid/`;
 - lexer implementado com `ply.lex`;
-- reconhecimento de keywords, identificadores, números, strings, labels, operadores aritméticos, relacionais e lógicos;
-- modo de inspeção de tokens com `--tokens`.
+- parser implementado com `ply.yacc`;
+- construção de uma AST explícita em `src/ast_nodes.py`;
+- suporte sintático para declarações, atribuições, `READ`, `PRINT`, `IF/ELSE/ENDIF`, `DO`, `CONTINUE`, `GOTO`, `RETURN` e `INTEGER/REAL/LOGICAL FUNCTION`;
+- modos de inspeção com `--tokens` e `--ast`.
 
-A próxima fase é a implementação do analisador sintático em `src/parser.py`.
+A próxima fase é a implementação da análise semântica em `src/semantic.py`.
 
 ## Decisão sobre o formato Fortran
 
@@ -77,13 +79,33 @@ Guardar tokens num ficheiro:
 python -m src.compiler tests/fortran/exemplo_02_fatorial.f77 --tokens-output build/exemplo_02_fatorial.tokens
 ```
 
+## Executar o parser
+
+Mostrar a AST no terminal:
+
+```bash
+python -m src.compiler tests/fortran/exemplo_02_fatorial.f77 --ast
+```
+
+Guardar a AST num ficheiro JSON:
+
+```bash
+python -m src.compiler tests/fortran/exemplo_02_fatorial.f77 --ast-output build/exemplo_02_fatorial.ast.json
+```
+
+Testar a construção de AST para os exemplos válidos:
+
+```bash
+make ast-all
+```
+
 ## Smoke test desta fase
 
 ```bash
 make smoke
 ```
 
-O comando normal ainda não gera VM real. Apenas confirma que a análise léxica correu com sucesso:
+O comando normal ainda não gera VM real. Apenas confirma que a análise léxica e sintática correram com sucesso:
 
 ```bash
 python -m src.compiler tests/fortran/exemplo_01_hello.f77 -o build/exemplo_01_hello.vm
@@ -98,4 +120,4 @@ O primeiro objetivo é compilar corretamente estes exemplos:
 3. `exemplo_03_primo.f77`
 4. `exemplo_04_soma_array.f77`
 
-O exemplo com `FUNCTION` fica como valorização.
+O exemplo com `FUNCTION` já é aceite sintaticamente, mas a validação semântica e a geração de código para funções continuam a ser valorização.

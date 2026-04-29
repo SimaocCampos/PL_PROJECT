@@ -1,0 +1,136 @@
+{
+  "node": "ProgramFile",
+  "program": {
+    "node": "Program",
+    "name": "FATORIAL",
+    "declarations": [
+      {
+        "node": "Declaration",
+        "type_name": "INTEGER",
+        "variables": [
+          {
+            "node": "VariableDeclaration",
+            "name": "N",
+            "dimensions": []
+          },
+          {
+            "node": "VariableDeclaration",
+            "name": "I",
+            "dimensions": []
+          },
+          {
+            "node": "VariableDeclaration",
+            "name": "FAT",
+            "dimensions": []
+          }
+        ]
+      }
+    ],
+    "statements": [
+      {
+        "node": "Print",
+        "items": [
+          {
+            "node": "Literal",
+            "value": "Introduza um numero inteiro positivo:",
+            "type_name": "STRING"
+          }
+        ]
+      },
+      {
+        "node": "Read",
+        "items": [
+          {
+            "node": "NameUse",
+            "name": "N",
+            "arguments": []
+          }
+        ]
+      },
+      {
+        "node": "Assignment",
+        "target": {
+          "node": "NameUse",
+          "name": "FAT",
+          "arguments": []
+        },
+        "expression": {
+          "node": "Literal",
+          "value": 1,
+          "type_name": "INTEGER"
+        }
+      },
+      {
+        "node": "Do",
+        "end_label": 10,
+        "variable": "I",
+        "start": {
+          "node": "Literal",
+          "value": 1,
+          "type_name": "INTEGER"
+        },
+        "end": {
+          "node": "NameUse",
+          "name": "N",
+          "arguments": []
+        },
+        "step": null
+      },
+      {
+        "node": "Assignment",
+        "target": {
+          "node": "NameUse",
+          "name": "FAT",
+          "arguments": []
+        },
+        "expression": {
+          "node": "BinaryOp",
+          "operator": "*",
+          "left": {
+            "node": "NameUse",
+            "name": "FAT",
+            "arguments": []
+          },
+          "right": {
+            "node": "NameUse",
+            "name": "I",
+            "arguments": []
+          }
+        }
+      },
+      {
+        "node": "LabelledStatement",
+        "label": 10,
+        "statement": {
+          "node": "Continue"
+        }
+      },
+      {
+        "node": "Print",
+        "items": [
+          {
+            "node": "Literal",
+            "value": "Fatorial de ",
+            "type_name": "STRING"
+          },
+          {
+            "node": "NameUse",
+            "name": "N",
+            "arguments": []
+          },
+          {
+            "node": "Literal",
+            "value": ": ",
+            "type_name": "STRING"
+          },
+          {
+            "node": "NameUse",
+            "name": "FAT",
+            "arguments": []
+          }
+        ]
+      }
+    ]
+  },
+  "subprograms": []
+}

@@ -1,0 +1,150 @@
+{
+  "node": "ProgramFile",
+  "program": {
+    "node": "Program",
+    "name": "SOMAARR",
+    "declarations": [
+      {
+        "node": "Declaration",
+        "type_name": "INTEGER",
+        "variables": [
+          {
+            "node": "VariableDeclaration",
+            "name": "NUMS",
+            "dimensions": [
+              {
+                "node": "Literal",
+                "value": 5,
+                "type_name": "INTEGER"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "node": "Declaration",
+        "type_name": "INTEGER",
+        "variables": [
+          {
+            "node": "VariableDeclaration",
+            "name": "I",
+            "dimensions": []
+          },
+          {
+            "node": "VariableDeclaration",
+            "name": "SOMA",
+            "dimensions": []
+          }
+        ]
+      }
+    ],
+    "statements": [
+      {
+        "node": "Assignment",
+        "target": {
+          "node": "NameUse",
+          "name": "SOMA",
+          "arguments": []
+        },
+        "expression": {
+          "node": "Literal",
+          "value": 0,
+          "type_name": "INTEGER"
+        }
+      },
+      {
+        "node": "Print",
+        "items": [
+          {
+            "node": "Literal",
+            "value": "Introduza 5 numeros inteiros:",
+            "type_name": "STRING"
+          }
+        ]
+      },
+      {
+        "node": "Do",
+        "end_label": 30,
+        "variable": "I",
+        "start": {
+          "node": "Literal",
+          "value": 1,
+          "type_name": "INTEGER"
+        },
+        "end": {
+          "node": "Literal",
+          "value": 5,
+          "type_name": "INTEGER"
+        },
+        "step": null
+      },
+      {
+        "node": "Read",
+        "items": [
+          {
+            "node": "NameUse",
+            "name": "NUMS",
+            "arguments": [
+              {
+                "node": "NameUse",
+                "name": "I",
+                "arguments": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "node": "Assignment",
+        "target": {
+          "node": "NameUse",
+          "name": "SOMA",
+          "arguments": []
+        },
+        "expression": {
+          "node": "BinaryOp",
+          "operator": "+",
+          "left": {
+            "node": "NameUse",
+            "name": "SOMA",
+            "arguments": []
+          },
+          "right": {
+            "node": "NameUse",
+            "name": "NUMS",
+            "arguments": [
+              {
+                "node": "NameUse",
+                "name": "I",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      },
+      {
+        "node": "LabelledStatement",
+        "label": 30,
+        "statement": {
+          "node": "Continue"
+        }
+      },
+      {
+        "node": "Print",
+        "items": [
+          {
+            "node": "Literal",
+            "value": "A soma dos numeros e: ",
+            "type_name": "STRING"
+          },
+          {
+            "node": "NameUse",
+            "name": "SOMA",
+            "arguments": []
+          }
+        ]
+      }
+    ]
+  },
+  "subprograms": []
+}
