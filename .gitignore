@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+
+# PLY generated files
+parser.out
+parsetab.py
+
+# Build/output
+build/*.vm
+ewvm_output.txt
+
+# OS/editor
+.DS_Store
+.vscode/
+.idea/
