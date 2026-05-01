@@ -106,3 +106,28 @@ A chamada de funções já é validada semanticamente em casos simples, mas a ge
 ## 9. Reaproveitamento do projeto antigo
 
 O projeto antigo serve como referência de organização e de geração EWVM, mas não como base gramatical, porque era Pascal e este projeto é Fortran 77.
+
+## 10. Geração EWVM na Fase 4
+
+A geração de código foi implementada em `src/codegen.py` como fase separada do parser. A entrada do gerador é a AST validada semanticamente e o relatório semântico, que contém as posições globais atribuídas às variáveis.
+
+A geração atual cobre o programa principal e as construções obrigatórias:
+
+- reserva de variáveis globais com `pushi 0`, `pushf 0.0` ou `pushs ""`;
+- leitura com `read`, `atoi` e `atof`;
+- escrita com `writei`, `writef`, `writes` e `writeln`;
+- atribuições com `storeg`;
+- acesso a variáveis com `pushg`;
+- arrays unidimensionais com `pushgp`, cálculo de endereço, `loadn` e `storen`;
+- expressões aritméticas, relacionais e lógicas;
+- `IF` com `jz`, `jump` e labels internos;
+- `GOTO` com labels derivados dos labels Fortran;
+- `DO label ... label CONTINUE`, agrupado durante a geração de código.
+
+O parser mantém o `DO` como instrução plana com referência ao label final. Na geração de código, o gerador procura o `label CONTINUE` correspondente na lista de instruções, transforma as instruções intermédias no corpo do ciclo e evita emiti-las novamente fora do ciclo.
+
+## 11. Limitações atuais da geração
+
+A Fase 4 ainda não gera código para `FUNCTION`/`SUBROUTINE`, embora a sintaxe e parte da semântica de funções já existam. Esta parte fica como valorização.
+
+A geração de arrays está limitada a arrays unidimensionais com base 1, que é suficiente para o exemplo `INTEGER NUMS(5)` do enunciado.

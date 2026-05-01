@@ -1,4 +1,4 @@
-.PHONY: setup smoke tokens ast ast-all semantic semantic-all invalid-all clean
+.PHONY: setup smoke tokens ast ast-all semantic semantic-all vm vm-all invalid-all clean
 
 setup:
 	python -m venv .venv
@@ -29,6 +29,15 @@ semantic-all:
 	python -m src.compiler tests/fortran/exemplo_03_primo.f77 --semantic-output build/exemplo_03_primo.semantic.json
 	python -m src.compiler tests/fortran/exemplo_04_soma_array.f77 --semantic-output build/exemplo_04_soma_array.semantic.json
 	python -m src.compiler tests/fortran/exemplo_05_conversor_function.f77 --semantic-output build/exemplo_05_conversor_function.semantic.json
+
+vm:
+	python -m src.compiler tests/fortran/exemplo_02_fatorial.f77 -o build/exemplo_02_fatorial.vm
+
+vm-all:
+	python -m src.compiler tests/fortran/exemplo_01_hello.f77 -o build/exemplo_01_hello.vm
+	python -m src.compiler tests/fortran/exemplo_02_fatorial.f77 -o build/exemplo_02_fatorial.vm
+	python -m src.compiler tests/fortran/exemplo_03_primo.f77 -o build/exemplo_03_primo.vm
+	python -m src.compiler tests/fortran/exemplo_04_soma_array.f77 -o build/exemplo_04_soma_array.vm
 
 invalid-all:
 	- python -m src.compiler tests/invalid/undeclared_var.f77 --semantic

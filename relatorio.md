@@ -207,13 +207,117 @@ make semantic-all
 
 ## 7. Geração de código
 
-A preencher na Fase 4.
+A geração de código foi implementada em `src/codegen.py`. O gerador recebe a AST validada e o relatório semântico, que contém a posição global de cada variável. Esta separação permite que o parser continue apenas responsável por reconhecer a estrutura do programa, enquanto a geração usa informação semântica já validada.
+
+A VM alvo é baseada numa pilha. Por isso, a geração segue o padrão:
+
+1. reservar espaço global para variáveis;
+2. emitir `start`;
+3. emitir o código de cada instrução;
+4. terminar com `stop`.
+
+As variáveis são reservadas antes do `start` com valores por omissão:
+
+```text
+INTEGER / LOGICAL → pushi 0
+REAL              → pushf 0.0
+STRING            → pushs ""
+```
+
+As expressões deixam sempre o seu resultado no topo da pilha. As atribuições consomem esse valor com `storeg`. O acesso a variáveis escalares usa `pushg`.
+
+### 7.1 Input e output
+
+A instrução `READ *, X` é traduzida para:
+
+```text
+read
+atoi / atof
+storeg posição
+```
+
+A instrução `PRINT *, ...` gera o código de cada argumento e depois usa `writei`, `writef` ou `writes`, conforme o tipo. No fim de cada `PRINT`, é emitido `writeln`.
+
+### 7.2 Expressões
+
+São geradas instruções para:
+
+- aritmética inteira: `add`, `sub`, `mul`, `div`, `mod`;
+- aritmética real: `fadd`, `fsub`, `fmul`, `fdiv`;
+- comparações: `equal`, `inf`, `infeq`, `sup`, `supeq`;
+- lógica: `and`, `or`, `not`.
+
+Quando uma expressão inteira é usada numa operação real ou atribuída a uma variável `REAL`, é emitida a conversão `itof`.
+
+### 7.3 Controlo de fluxo
+
+O `IF` é traduzido com labels internos gerados automaticamente:
+
+```text
+<condição>
+jz IF_ELSE
+<then>
+jump IF_END
+IF_ELSE:
+<else>
+IF_END:
+```
+
+O `GOTO label` é traduzido para `jump L<label>`, e os labels Fortran são emitidos como labels EWVM, por exemplo `20` torna-se `L20:`.
+
+### 7.4 Ciclos DO
+
+O Fortran 77 usa ciclos terminados por label, como:
+
+```fortran
+DO 10 I = 1, N
+  FAT = FAT * I
+10 CONTINUE
+```
+
+Na AST, o `DO` guarda apenas o label final. Durante a geração, o gerador procura o `label CONTINUE` correspondente e agrupa as instruções intermédias como corpo do ciclo. A tradução segue o esquema:
+
+```text
+<início>
+storeg I
+DO_START:
+pushg I
+<fim>
+infeq
+jz DO_END
+<corpo>
+L10:
+pushg I
+pushi 1
+add
+storeg I
+jump DO_START
+DO_END:
+```
+
+### 7.5 Arrays
+
+Arrays unidimensionais são tratados como posições consecutivas na zona global. O acesso `NUMS(I)` calcula o endereço com:
+
+```text
+pushgp
+<índice>
+pushi 1
+sub
+pushi base
+add
+loadn / storen
+```
+
+Nesta fase, a geração de código para funções definidas pelo utilizador ainda não foi implementada; `FUNCTION` permanece como valorização.
 
 ## 8. Testes
 
 Os exemplos de teste encontram-se em `tests/fortran/` e `tests/invalid/`.
 
-Nesta fase, os exemplos válidos do enunciado são usados para confirmar que o lexer reconhece tokens, o parser constrói a AST e a análise semântica valida corretamente o programa. O comando `make semantic-all` gera ficheiros JSON com as tabelas de símbolos e labels reconhecidos.
+Os exemplos válidos do enunciado são usados para confirmar que o lexer reconhece tokens, o parser constrói a AST, a análise semântica valida corretamente o programa e a geração de código produz ficheiros VM. O comando `make semantic-all` gera ficheiros JSON com as tabelas de símbolos e labels reconhecidos. O comando `make vm-all` gera código EWVM para os exemplos 1 a 4.
+
+Foram adicionados ficheiros de referência em `tests/expected_vm/` para os exemplos 1 a 4. Estes ficheiros servem como base de comparação e como material para testar diretamente na EWVM.
 
 Foram também adicionados testes inválidos para verificar erros como:
 
@@ -237,7 +341,9 @@ Uma dificuldade inicial foi distinguir números inteiros normais de labels. A so
 
 Outra dificuldade foi a ambiguidade entre acesso a arrays e chamada de funções, já que ambas usam a forma `NOME(...)`. A solução adotada foi guardar a construção no parser como `NameUse` com argumentos e decidir na análise semântica: se o nome corresponder a uma função conhecida, é chamada de função; se corresponder a um array, é acesso indexado.
 
-A terceira dificuldade foi representar ciclos `DO` de Fortran 77. Nesta fase, o parser guarda o `DO` como instrução com referência ao label final. A análise semântica valida se esse label existe, se aparece depois do `DO` e se está associado a uma instrução `CONTINUE`.
+A terceira dificuldade foi representar ciclos `DO` de Fortran 77. O parser guarda o `DO` como instrução com referência ao label final. A análise semântica valida se esse label existe, se aparece depois do `DO` e se está associado a uma instrução `CONTINUE`. Na geração de código, foi necessário percorrer a lista de instruções e agrupar dinamicamente o corpo do ciclo entre o `DO` e o `label CONTINUE`.
+
+Outra dificuldade foi o acesso a arrays. A solução adotada considera arrays unidimensionais com base 1. O endereço é calculado a partir de `pushgp`, do índice gerado e da posição base do array na tabela de símbolos.
 
 ## 10. Como executar
 
@@ -246,4 +352,5 @@ python -m src.compiler tests/fortran/exemplo_01_hello.f77 --tokens
 python -m src.compiler tests/fortran/exemplo_01_hello.f77 --ast
 python -m src.compiler tests/fortran/exemplo_01_hello.f77 --semantic
 python -m src.compiler tests/fortran/exemplo_01_hello.f77 -o build/exemplo_01_hello.vm
+make vm-all
 ```

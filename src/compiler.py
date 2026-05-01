@@ -6,35 +6,26 @@ import argparse
 from pathlib import Path
 
 from .ast_nodes import format_ast
+from .codegen import generate
 from .lexer import format_tokens, tokenize
 from .parser import parse
 from .semantic import analyse, format_semantic_report
 
 
 def compile_file(input_path: Path, output_path: Path) -> None:
-    """Executa a pipeline disponível do compilador.
+    """Executa a pipeline completa e escreve código EWVM.
 
-    Na Fase 3 já existem análise léxica, análise sintática, construção da AST e
-    análise semântica. A geração de VM será implementada na Fase 4, por isso o
-    ficheiro de saída ainda é informativo.
+    A pipeline da Fase 4 é: análise léxica, análise sintática, construção da
+    AST, análise semântica e geração de código para a EWVM.
     """
 
     source = input_path.read_text(encoding="utf-8")
     ast = parse(source)
     semantic_report = analyse(ast)
-
-    message = (
-        "Fase 3 concluída: análise léxica, sintática e semântica executadas com sucesso.\n"
-        f"Ficheiro de entrada: {input_path}\n"
-        f"Programa reconhecido: {ast.program.name}\n"
-        f"Subprogramas reconhecidos: {len(ast.subprograms)}\n"
-        f"Símbolos globais: {len(semantic_report.main.symbols)}\n"
-        f"Labels globais: {len(semantic_report.main.labels)}\n"
-        "A geração de código VM será implementada na Fase 4.\n"
-    )
+    vm_code = generate(ast, semantic_report)
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(message, encoding="utf-8")
+    output_path.write_text(vm_code, encoding="utf-8")
 
 
 def write_tokens(input_path: Path, output_path: Path | None = None) -> None:
@@ -127,7 +118,7 @@ def main() -> None:
         return
 
     compile_file(input_path, output_path)
-    print(f"Fase 3 OK. Output escrito em: {output_path}")
+    print(f"Código EWVM escrito em: {output_path}")
 
 
 if __name__ == "__main__":
