@@ -6,18 +6,19 @@ O objetivo é construir um compilador, em Python e com PLY, para um subconjunto 
 
 ## Estado atual
 
-Fase 2 concluída:
+Fase 3 concluída:
 
 - estrutura inicial do repositório;
 - exemplos do enunciado em `tests/fortran/`;
-- exemplos inválidos iniciais em `tests/invalid/`;
+- exemplos inválidos em `tests/invalid/`;
 - lexer implementado com `ply.lex`;
 - parser implementado com `ply.yacc`;
 - construção de uma AST explícita em `src/ast_nodes.py`;
-- suporte sintático para declarações, atribuições, `READ`, `PRINT`, `IF/ELSE/ENDIF`, `DO`, `CONTINUE`, `GOTO`, `RETURN` e `INTEGER/REAL/LOGICAL FUNCTION`;
-- modos de inspeção com `--tokens` e `--ast`.
+- análise semântica implementada em `src/semantic.py`;
+- suporte semântico para declarações, tipos, arrays simples, `READ`, `PRINT`, `IF/ELSE/ENDIF`, `DO`, `CONTINUE`, `GOTO`, `RETURN` em funções e chamadas simples a funções definidas pelo utilizador;
+- modos de inspeção com `--tokens`, `--ast` e `--semantic`.
 
-A próxima fase é a implementação da análise semântica em `src/semantic.py`.
+A próxima fase é a geração de código EWVM em `src/codegen.py`.
 
 ## Decisão sobre o formato Fortran
 
@@ -99,13 +100,39 @@ Testar a construção de AST para os exemplos válidos:
 make ast-all
 ```
 
+## Executar a análise semântica
+
+Mostrar o relatório semântico no terminal:
+
+```bash
+python -m src.compiler tests/fortran/exemplo_02_fatorial.f77 --semantic
+```
+
+Guardar o relatório semântico em JSON:
+
+```bash
+python -m src.compiler tests/fortran/exemplo_02_fatorial.f77 --semantic-output build/exemplo_02_fatorial.semantic.json
+```
+
+Testar todos os exemplos válidos:
+
+```bash
+make semantic-all
+```
+
+Testar exemplos que devem falhar semanticamente:
+
+```bash
+make invalid-all
+```
+
 ## Smoke test desta fase
 
 ```bash
 make smoke
 ```
 
-O comando normal ainda não gera VM real. Apenas confirma que a análise léxica e sintática correram com sucesso:
+O comando normal ainda não gera VM real. Apenas confirma que a análise léxica, sintática e semântica correram com sucesso:
 
 ```bash
 python -m src.compiler tests/fortran/exemplo_01_hello.f77 -o build/exemplo_01_hello.vm
@@ -120,4 +147,4 @@ O primeiro objetivo é compilar corretamente estes exemplos:
 3. `exemplo_03_primo.f77`
 4. `exemplo_04_soma_array.f77`
 
-O exemplo com `FUNCTION` já é aceite sintaticamente, mas a validação semântica e a geração de código para funções continuam a ser valorização.
+O exemplo com `FUNCTION` já é aceite sintática e semanticamente em casos simples. A geração de código para funções continuará a ser tratada como valorização, depois de a VM dos exemplos 1 a 4 estar estável.
