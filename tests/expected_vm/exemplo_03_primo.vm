@@ -1,0 +1,54 @@
+pushi 0
+pushi 0
+pushi 0
+start
+pushs "Introduza um numero inteiro positivo:"
+writes
+writeln
+read
+atoi
+storeg 0
+pushi 1
+storeg 2
+pushi 2
+storeg 1
+L20:
+pushg 1
+pushg 0
+pushi 2
+div
+infeq
+pushg 2
+and
+jz IF_END_0
+pushg 0
+pushg 1
+mod
+pushi 0
+equal
+jz IF_END_1
+pushi 0
+storeg 2
+IF_END_1:
+pushg 1
+pushi 1
+add
+storeg 1
+jump L20
+IF_END_0:
+pushg 2
+jz IF_ELSE_2
+pushg 0
+writei
+pushs " e um numero primo"
+writes
+writeln
+jump IF_END_3
+IF_ELSE_2:
+pushg 0
+writei
+pushs " nao e um numero primo"
+writes
+writeln
+IF_END_3:
+stop

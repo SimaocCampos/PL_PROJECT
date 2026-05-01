@@ -15,3 +15,7 @@ class SyntaxErrorPL(CompilerError):
 
 class SemanticError(CompilerError):
     """Erro encontrado durante a análise semântica."""
+
+
+class CodeGenerationError(CompilerError):
+    """Erro encontrado durante a geração de código EWVM."""

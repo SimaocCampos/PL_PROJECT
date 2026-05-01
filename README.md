@@ -6,7 +6,7 @@ O objetivo é construir um compilador, em Python e com PLY, para um subconjunto 
 
 ## Estado atual
 
-Fase 3 concluída:
+Fase 4 concluída:
 
 - estrutura inicial do repositório;
 - exemplos do enunciado em `tests/fortran/`;
@@ -15,10 +15,11 @@ Fase 3 concluída:
 - parser implementado com `ply.yacc`;
 - construção de uma AST explícita em `src/ast_nodes.py`;
 - análise semântica implementada em `src/semantic.py`;
-- suporte semântico para declarações, tipos, arrays simples, `READ`, `PRINT`, `IF/ELSE/ENDIF`, `DO`, `CONTINUE`, `GOTO`, `RETURN` em funções e chamadas simples a funções definidas pelo utilizador;
+- geração de código EWVM implementada em `src/codegen.py`;
+- geração de VM para o programa principal com variáveis escalares, arrays unidimensionais, `READ`, `PRINT`, atribuições, expressões, `IF`, `GOTO` e `DO label ... CONTINUE`;
 - modos de inspeção com `--tokens`, `--ast` e `--semantic`.
 
-A próxima fase é a geração de código EWVM em `src/codegen.py`.
+O exemplo 5 com `INTEGER FUNCTION` continua tratado como valorização para geração de código. A análise sintática e semântica já reconhece funções simples, mas a Fase 4 gera VM apenas para o programa principal e para as construções obrigatórias dos exemplos 1 a 4.
 
 ## Decisão sobre o formato Fortran
 
@@ -52,7 +53,7 @@ tests/
   expected_vm/     # Código VM esperado/validado
 
 docs/
-  decisoes.md      # Decisões técnicas iniciais
+  decisoes.md      # Decisões técnicas
 
 relatorio.md       # Relatório técnico
 requirements.txt   # Dependências Python
@@ -68,74 +69,50 @@ pip install -r requirements.txt
 
 ## Executar o lexer
 
-Mostrar tokens no terminal:
-
 ```bash
 python -m src.compiler tests/fortran/exemplo_02_fatorial.f77 --tokens
 ```
 
-Guardar tokens num ficheiro:
-
-```bash
-python -m src.compiler tests/fortran/exemplo_02_fatorial.f77 --tokens-output build/exemplo_02_fatorial.tokens
-```
-
 ## Executar o parser
-
-Mostrar a AST no terminal:
 
 ```bash
 python -m src.compiler tests/fortran/exemplo_02_fatorial.f77 --ast
 ```
 
-Guardar a AST num ficheiro JSON:
-
-```bash
-python -m src.compiler tests/fortran/exemplo_02_fatorial.f77 --ast-output build/exemplo_02_fatorial.ast.json
-```
-
-Testar a construção de AST para os exemplos válidos:
-
-```bash
-make ast-all
-```
-
 ## Executar a análise semântica
-
-Mostrar o relatório semântico no terminal:
 
 ```bash
 python -m src.compiler tests/fortran/exemplo_02_fatorial.f77 --semantic
 ```
 
-Guardar o relatório semântico em JSON:
+## Gerar código EWVM
+
+Gerar um ficheiro VM:
 
 ```bash
-python -m src.compiler tests/fortran/exemplo_02_fatorial.f77 --semantic-output build/exemplo_02_fatorial.semantic.json
+python -m src.compiler tests/fortran/exemplo_02_fatorial.f77 -o build/exemplo_02_fatorial.vm
 ```
 
-Testar todos os exemplos válidos:
+Gerar VM para os exemplos 1 a 4:
 
 ```bash
-make semantic-all
+make vm-all
 ```
 
-Testar exemplos que devem falhar semanticamente:
+Os ficheiros de referência estão em:
 
-```bash
-make invalid-all
+```text
+tests/expected_vm/
 ```
 
-## Smoke test desta fase
+## Testes úteis
 
 ```bash
-make smoke
-```
-
-O comando normal ainda não gera VM real. Apenas confirma que a análise léxica, sintática e semântica correram com sucesso:
-
-```bash
-python -m src.compiler tests/fortran/exemplo_01_hello.f77 -o build/exemplo_01_hello.vm
+make smoke        # compila o hello world para VM
+make ast-all      # gera AST dos exemplos
+make semantic-all # gera relatórios semânticos
+make vm-all       # gera VM dos exemplos 1 a 4
+make invalid-all  # confirma erros semânticos esperados
 ```
 
 ## Objetivo do MVP
@@ -147,4 +124,4 @@ O primeiro objetivo é compilar corretamente estes exemplos:
 3. `exemplo_03_primo.f77`
 4. `exemplo_04_soma_array.f77`
 
-O exemplo com `FUNCTION` já é aceite sintática e semanticamente em casos simples. A geração de código para funções continuará a ser tratada como valorização, depois de a VM dos exemplos 1 a 4 estar estável.
+O exemplo com `FUNCTION` é valorização. A próxima fase será estabilizar os exemplos 1 a 4 na EWVM real e, se sobrar tempo, atacar geração de código para `INTEGER FUNCTION`.
