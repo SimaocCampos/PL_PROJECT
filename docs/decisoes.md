@@ -1,4 +1,4 @@
-# Decisões técnicas iniciais
+# Decisões técnicas
 
 ## 1. Formato de entrada
 
@@ -62,23 +62,47 @@ A primeira ocorrência de `10` é `INTEGER_LITERAL`; a segunda é `LABEL`.
 
 O parser reconhece `DO 10 I = 1, N` como uma instrução que referencia o label `10`, mas não transforma ainda o corpo do ciclo numa subárvore própria.
 
-Isto segue melhor a natureza label-based do Fortran 77. Na Fase 3, a análise semântica valida que o label existe e que corresponde a um `CONTINUE`.
+Isto segue a natureza label-based do Fortran 77. A análise semântica valida que o label existe, que aparece depois do `DO` e que corresponde a um `CONTINUE`.
 
 ## 6. Uso de nomes com argumentos
 
-A sintaxe `NOME(ARG1, ARG2)` pode representar chamada de função ou acesso indexado, dependendo do contexto semântico. O parser guarda esta forma como `NameUse` com argumentos; a Fase 3 decide se é array ou função.
+A sintaxe `NOME(ARG1, ARG2)` pode representar chamada de função ou acesso indexado, dependendo do contexto semântico. O parser guarda esta forma como `NameUse` com argumentos.
+
+A análise semântica decide:
+
+- se o nome existir como função conhecida, trata-se de uma chamada de função;
+- se o nome existir como array, trata-se de um acesso indexado;
+- se o nome for escalar, o uso com argumentos é erro semântico.
 
 A função intrínseca `MOD(...)` é guardada diretamente como `FunctionCall`, porque é palavra reservada no lexer.
 
-## 7. Valorização
+## 7. Regras semânticas atuais
+
+A Fase 3 valida:
+
+- duplicação de símbolos no mesmo âmbito;
+- uso de nomes não declarados;
+- uso correto de escalares e arrays;
+- tipos de expressões aritméticas, relacionais e lógicas;
+- compatibilidade de tipos em atribuições;
+- condição lógica em `IF`;
+- variável de controlo inteira em `DO`;
+- labels existentes em `GOTO`;
+- correspondência entre `DO label` e `label CONTINUE`;
+- uso de `RETURN` apenas em funções;
+- parâmetros declarados nas funções;
+- chamadas simples a funções definidas pelo utilizador.
+
+## 8. Valorização
 
 Só depois do MVP estar funcional serão considerados:
 
 - geração de código completa para `INTEGER FUNCTION`;
-- chamada de funções definidas pelo utilizador;
 - `SUBROUTINE`;
 - otimizações simples.
 
-## 8. Reaproveitamento do projeto antigo
+A chamada de funções já é validada semanticamente em casos simples, mas a geração de VM para funções fica para depois dos exemplos 1 a 4 estarem estáveis.
+
+## 9. Reaproveitamento do projeto antigo
 
 O projeto antigo serve como referência de organização e de geração EWVM, mas não como base gramatical, porque era Pascal e este projeto é Fortran 77.
